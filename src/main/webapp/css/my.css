@@ -1,0 +1,53 @@
+.table{
+    background-color: darkkhaki;
+    padding: 20px;
+    border: 1px solid grey;
+
+}
+.table > table{
+    background-color: antiquewhite;
+    border: 3px dotted black ;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table table th{
+    font-weight: bold;
+    padding: 5px;
+    background: cadetblue;
+    border: 1px solid black;
+    margin: 5px;
+    font-family: Arial;
+
+}
+
+.table table td{
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px;
+    font-family: Arial;
+}
+span{
+    margin: 5px;
+    font-family: Arial;
+    font-size: large;
+}
+select{
+    margin: 5px;
+    font-family: Arial;
+    font-size: large;
+}
+#page{
+    padding: 5px;
+
+
+}
+#page > div{
+
+    width: 20px;
+    border: 1px solid black;
+    border-color: grey;
+    font-family: Arial;
+    font-size: large;
+    text-align: center;
+}

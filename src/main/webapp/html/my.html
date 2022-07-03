@@ -2,10 +2,124 @@
 <head>
     <title>RPG</title>
     <script src=https://code.jquery.com/jquery-3.6.0.min.js></script>
-    <link href="/css/my.css" rel="stylesheet">
+    <link href="../css/my.css" rel="stylesheet">
+
 </head>
 <body>
 <h1>RPG admin panel</h1>
+<div class="table">
+    <span>Count per page: </span>
+    <form action = "#">
+    <select id="selectCheck" onChange = "jsFunctionSelect();">
+
+    </select>
+    </form>
+
+
+    <table id = "my_table">
+        <tr>
+            <th>#</th><th>Name</th><th>Title</th><th>Race</th><th>Profession</th><th>Level</th><th>Birthday</th><th>Banned</th>
+        </tr>
+    </table>
+    <div id="page" onchange = "jsFunctionSelect();">
+        <span>Pages:</span>
+
+    </div>
+</div>
+        <script>
+            let value = 1;
+            fetch('/rest/players/count')
+                .then((resp) => resp.text())
+                .then(function getAllCount(data) {
+
+                    value = Number(data);
+                    console.log(value);
+
+                })
+
+
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+
+            let selectCheck= document.getElementById('selectCheck');
+            for (let i = 4; i <= 20; i++) {
+                let option = document.createElement('option');
+                option.setAttribute('value', String(i));
+                let number = document.createTextNode("" + i);
+                option.appendChild(number);
+                selectCheck.appendChild(option);
+
+                i = i+3;
+            }
+
+
+
+
+            function jsFunctionSelect(){
+                selectCheck = document.getElementById('selectCheck').value;
+
+                let pages = Math.ceil(value / selectCheck);
+
+                for (let j = 0; j <= pages; j++) {
+                    let page = document.getElementById('page');
+                    let div_page = document.createElement('button');
+                    div_page.setAttribute('value', String(j));
+                    let number_page = document.createTextNode("" + j);
+                    div_page.appendChild(number_page);
+                    page.appendChild(div_page);
+                }
+                let pageCheck = document.getElementById('page').value;
+               // pageCheck.addEventListener('click');
+              //  pageCheck.addEventListener('click', function (event){
+               //     if(pageCheck>1){
+
+               //     }
+            //    })
+                getAllPlayers(selectCheck,pageCheck);
+
+            }
+
+
+
+            jsFunctionSelect();
+
+            function getAllPlayers(selectChoose,pageChoose)
+            {
+
+                console.log(pageChoose);
+                console.log(selectChoose);
+                fetch('/rest/players?pageChoose&selectChoose')
+                    .then((resp) => resp.json())
+                    .then(function createTable(data) {
+                        console.log(data);
+                        let table = document.getElementById('my_table');
+                        let tbody = document.createElement('tbody');
+                        for (let key in data) {
+                            let player = data[key];
+                            let row = document.createElement('tr');
+                            for (let key in player) {
+                                let td = document.createElement('td');
+                                let cell = document.createTextNode(player[key]);
+                                td.appendChild(cell);
+                                row.appendChild(td);
+                            }
+                            tbody.appendChild(row);
+                        }
+                        return table.appendChild(tbody);
+                    })
+
+
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+            }
+
+
+        </script>
+
 
 </body>
 </html>
