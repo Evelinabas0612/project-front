@@ -5,15 +5,20 @@
     <link href="../css/my.css" rel="stylesheet">
 
 </head>
-<body>
+<body onload = "jsFunctionSelect();">
 <h1>RPG admin panel</h1>
+<h2>Accounts list</h2>
 <div class="table">
-    <span>Count per page: </span>
-    <form action = "#">
-    <select id="selectCheck" onChange = "jsFunctionSelect();">
+    Count per page:
 
+    <select id="selectCheck" onchange = "jsFunctionSelect();">
+        <option value = "0" > </option>
+        <option value = "3" >3</option>
+        <option value = "8" >8</option>
+        <option value = "12" >12</option>
+        <option value = "20" >20</option>
     </select>
-    </form>
+
 
 
     <table id = "my_table">
@@ -21,104 +26,117 @@
             <th>#</th><th>Name</th><th>Title</th><th>Race</th><th>Profession</th><th>Level</th><th>Birthday</th><th>Banned</th>
         </tr>
     </table>
-    <div id="page" onchange = "jsFunctionSelect();">
+    <div id="page">
         <span>Pages:</span>
+
 
     </div>
 </div>
         <script>
-            let value = 1;
-            fetch('/rest/players/count')
-                .then((resp) => resp.text())
-                .then(function getAllCount(data) {
 
-                    value = Number(data);
-                    console.log(value);
 
+            function getCount() {
+                let val = 0;
+                let url = '/rest/players/count';
+                $.ajax({
+                    url:url,
+                    async:false,
+                    success:function (count){
+                        val=parseInt(count);
+                    }
                 })
 
-
-                .catch(function (error) {
-                    console.log(error);
-                });
+                return val;
 
 
-            let selectCheck= document.getElementById('selectCheck');
-            for (let i = 4; i <= 20; i++) {
-                let option = document.createElement('option');
-                option.setAttribute('value', String(i));
-                let number = document.createTextNode("" + i);
-                option.appendChild(number);
-                selectCheck.appendChild(option);
-
-                i = i+3;
             }
-
 
 
 
             function jsFunctionSelect(){
-                selectCheck = document.getElementById('selectCheck').value;
+               let pageNumber = 1;
+               let pageSize = document.getElementById('selectCheck').value;
 
-                let pages = Math.ceil(value / selectCheck);
-
-                for (let j = 0; j <= pages; j++) {
-                    let page = document.getElementById('page');
-                    let div_page = document.createElement('button');
-                    div_page.setAttribute('value', String(j));
-                    let number_page = document.createTextNode("" + j);
-                    div_page.appendChild(number_page);
-                    page.appendChild(div_page);
+                if(pageSize  == 0){
+                    pageSize  = 3;
                 }
-                let pageCheck = document.getElementById('page').value;
-               // pageCheck.addEventListener('click');
-              //  pageCheck.addEventListener('click', function (event){
-               //     if(pageCheck>1){
 
-               //     }
-            //    })
-                getAllPlayers(selectCheck,pageCheck);
+
+                getAllPlayers(pageSize , pageNumber);
 
             }
 
 
 
-            jsFunctionSelect();
-
-            function getAllPlayers(selectChoose,pageChoose)
-            {
-
-                console.log(pageChoose);
-                console.log(selectChoose);
-                fetch('/rest/players?pageChoose&selectChoose')
-                    .then((resp) => resp.json())
-                    .then(function createTable(data) {
-                        console.log(data);
-                        let table = document.getElementById('my_table');
-                        let tbody = document.createElement('tbody');
-                        for (let key in data) {
-                            let player = data[key];
-                            let row = document.createElement('tr');
-                            for (let key in player) {
-                                let td = document.createElement('td');
-                                let cell = document.createTextNode(player[key]);
-                                td.appendChild(cell);
-                                row.appendChild(td);
-                            }
-                            tbody.appendChild(row);
-                        }
-                        return table.appendChild(tbody);
-                    })
 
 
-                    .catch(function (error) {
-                        console.log(error);
+            function getAllPlayers(pageSize, pageNumber) {
+
+                let result = getCount();
+                console.log(result);
+                console.log(pageSize);
+                let pages = Math.ceil(result / pageSize);
+                let url = '/rest/players';
+                url = url.concat('?pageSize=').concat(pageSize);
+                url = url.concat('&pagesNumber=').concat(pageNumber);
+
+                $("tr:has(td)").remove();
+
+                $.get(url, function(response){
+                    $.each(response,  function (i, item){
+                        $('<tr>').html("<td>"
+                            + item.id +"</td><td>"
+                            + item.name + "</td><td>"
+                            + item.title + "</td><td>"
+                            + item.race + "</td><td>"
+                            + item.profession + "</td><td>"
+                            + item.level + "</td><td>"
+                            + new Date(item.birthday).toLocaleDateString() + "</td><td>"
+                            + item.banned + "</td>"
+                        ).appendTo("#my_table");
+
                     });
 
-            }
+                });
 
 
-        </script>
+
+                console.log(pages);
+                    $("button").remove();
+
+                    for (let j = 1; j <= pages; j++) {
+                       let size = pageSize;
+                        /*    let page = document.getElementById("page");
+                             let div_page = document.createElement("button");
+                              div_page.setAttribute("id", "j");
+                              div_page.setAttribute("class", "pgn-bnt-styled");
+                              div_page.setAttribute("onclick", "getAllPlayers("+size+","+ j+")");
+                              let number_page = document.createTextNode("" + j);
+                              div_page.appendChild(number_page);
+                           age.appendChild(div_page); */
+                     let button = "<button>" + j + "</button>";
+                     let btn = $(button)
+                     .attr('id', "btn_"+ j)
+                     .attr('onclick',"getAllPlayers("+size+","+ j+")")
+                     .addClass('pgn-bnt-styled');
+                     $("#page").append(btn);
+                     console.log(size + ":" + j);
+             }
+
+     }
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
 
 
 </body>
