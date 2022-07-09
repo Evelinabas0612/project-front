@@ -23,11 +23,20 @@
 
     <table id = "my_table">
         <tr>
-            <th>#</th><th>Name</th><th>Title</th><th>Race</th><th>Profession</th><th>Level</th><th>Birthday</th><th>Banned</th>
+            <th>#</th>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Race</th>
+            <th>Profession</th>
+            <th>Level</th>
+            <th>Birthday</th>
+            <th>Banned</th>
+            <th>Edit</th>
+            <th>Delete</th>
         </tr>
     </table>
     <div id="page">
-        <span>Pages:</span>
+       <span>Pages:</span>
 
 
     </div>
@@ -54,7 +63,7 @@
 
 
             function jsFunctionSelect(){
-               let pageNumber = 1;
+               let pageNumber = 0;
                let pageSize = document.getElementById('selectCheck').value;
 
                 if(pageSize  == 0){
@@ -70,17 +79,17 @@
 
 
 
-            function getAllPlayers(pageSize, pageNumber) {
+            function getAllPlayers(size, page) {
+                $("tr:has(td)").remove();
 
                 let result = getCount();
                 console.log(result);
-                console.log(pageSize);
-                let pages = Math.ceil(result / pageSize);
+                console.log(size);
+                let pages = Math.ceil(result / size);
                 let url = '/rest/players';
-                url = url.concat('?pageSize=').concat(pageSize);
-                url = url.concat('&pagesNumber=').concat(pageNumber);
-
-                $("tr:has(td)").remove();
+                url = url.concat('?pageSize=').concat(size);
+                url = url.concat('&pageNumber=').concat(page);
+                console.log(url);
 
                 $.get(url, function(response){
                     $.each(response,  function (i, item){
@@ -92,7 +101,13 @@
                             + item.profession + "</td><td>"
                             + item.level + "</td><td>"
                             + new Date(item.birthday).toLocaleDateString() + "</td><td>"
-                            + item.banned + "</td>"
+                            + item.banned + "</td><td>"
+                            + "<button id='edit" + item.id +"'>"
+                            + "<img src='/img/edit.png'>"
+                            + "</button>" + "</td><td>"
+                            + "<button id='delete" + item.id +"'onclick='deleteId("+item.id+")'>"
+                            + "<img src='/img/delete.png'>"
+                            + "</button>"+ "</td>"
                         ).appendTo("#my_table");
 
                     });
@@ -102,30 +117,46 @@
 
 
                 console.log(pages);
-                    $("button").remove();
+                    $("button.pgn-bnt-styled").remove();
 
-                    for (let j = 1; j <= pages; j++) {
-                       let size = pageSize;
-                        /*    let page = document.getElementById("page");
+                    for (let j = 0; j < pages; j++) {
+
+                            let page = document.getElementById("page");
                              let div_page = document.createElement("button");
-                              div_page.setAttribute("id", "j");
+                              div_page.setAttribute("id", "btn"+j);
                               div_page.setAttribute("class", "pgn-bnt-styled");
                               div_page.setAttribute("onclick", "getAllPlayers("+size+","+ j+")");
-                              let number_page = document.createTextNode("" + j);
+                              let number_page = document.createTextNode("" + (j+1));
                               div_page.appendChild(number_page);
-                           age.appendChild(div_page); */
-                     let button = "<button>" + j + "</button>";
+                            page.appendChild(div_page);
+            /*         let button = "<button>" + (j + 1) + "</button>";
                      let btn = $(button)
                      .attr('id', "btn_"+ j)
                      .attr('onclick',"getAllPlayers("+size+","+ j+")")
                      .addClass('pgn-bnt-styled');
-                     $("#page").append(btn);
+                     $("#page").append(btn);*/
                      console.log(size + ":" + j);
              }
-
+            let pageNow = "btn" + page;
+                    console.log(pageNow);
+            $(pageNow).css("color","red");
+            if(pageNow){
+                deleteId(id);
+                document.location.href = "?";
+            }
      }
 
-
+    function  deleteId(id){
+        let url = '/rest/players/'+id;
+        console.log(url);
+        $.ajax({
+            url:url,
+            type:'DELETE',
+            success:function (data){
+                location.reload();
+            }
+        });
+    }
 
 
 

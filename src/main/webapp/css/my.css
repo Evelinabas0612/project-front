@@ -43,16 +43,13 @@ select{
 
 
 }
-#page > div{
+.pgn-bnt-styled{
 
-    width: 20px;
+    width: 30px;
+    padding: 2px;
+    margin: 1px;
     border: 1px solid black;
     border-color: grey;
-    font-family: Arial;
-    font-size: large;
-    text-align: center;
-}
-#active{
-    color:red;
-    border-color: red;
+    border-radius: 5px;
+
 }
