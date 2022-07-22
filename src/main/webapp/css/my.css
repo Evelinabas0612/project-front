@@ -28,7 +28,7 @@
     margin: 5px;
     font-family: Arial;
 }
-span{
+#pages{
     margin: 5px;
     font-family: Arial;
     font-size: large;
@@ -52,4 +52,46 @@ select{
     border-color: grey;
     border-radius: 5px;
 
+}
+
+.create input{
+   width: 200px;
+    border-radius: 20px;
+    padding: 5px;
+
+
+}
+
+.create select{
+    width: 200px;
+    border-radius: 20px;
+    padding: 5px;
+
+
+}
+
+#btn_sv{
+    width: 100px;
+    height: 30px;
+    padding: 2px;
+    margin: 1px;
+    border: 1px solid black;
+    border-color: grey;
+    border-radius: 5px;
+}
+
+.message{
+    width: 500px;
+    text-align: center;
+    background-color: greenyellow;
+}
+
+#btn_crt{
+    width: 100px;
+    height: 30px;
+    padding: 2px;
+    margin: 1px;
+    border: 1px solid black;
+    border-color: grey;
+    border-radius: 5px;
 }
